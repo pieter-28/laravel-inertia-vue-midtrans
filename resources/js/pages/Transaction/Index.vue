@@ -125,7 +125,7 @@ const getStatusColor = (status: string) => {
                                         </TableCell>
                                         <TableCell class="px-2 py-2">{{ transaction.created_at }}</TableCell>
                                         <TableCell class="px-2 py-2">
-                                            <Link :href="route('transaction.show', { id: transaction.id })"
+                                            <Link :href="route('transaction.show', { transaction: transaction.id })"
                                                 class="px-1 py-1 text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 rounded-md transition">
                                                 View
                                             </Link>

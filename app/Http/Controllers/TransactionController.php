@@ -48,7 +48,9 @@ class TransactionController extends Controller
      */
     public function show(Transaction $transaction)
     {
-        //
+        return inertia('Transaction/Show', [
+            'transaction' => $transaction->load('product', 'customer'),
+        ]);
     }
 
     /**
