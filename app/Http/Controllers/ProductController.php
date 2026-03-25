@@ -13,9 +13,14 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
+        $products = Product::orderBy('created_at', 'desc')
+            ->paginate(12)
+            ->withQueryString();
+
+        $products->setCollection(ProductResource::collection($products)->collection);
+
         return inertia('Product/Index', [
-            'products' => ProductResource::collection($products)->resolve(),
+            'products' => $products,
         ]);
     }
 

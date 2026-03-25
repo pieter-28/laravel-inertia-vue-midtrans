@@ -6,8 +6,6 @@ import { Search } from 'lucide-vue-next';
 import {
     Card,
     CardContent,
-    CardHeader,
-    CardTitle,
 } from '@/components/ui/card';
 import {
     Table,
@@ -53,6 +51,12 @@ const getStatusColor = (status: string) => {
             return 'bg-gray-100 text-gray-800';
     }
 }
+
+const formatPaginationLabel = (label: string) =>
+    label
+        .replace(/&laquo;/g, '«')
+        .replace(/&raquo;/g, '»')
+        .replace(/&nbsp;/g, ' ');
 </script>
 
 <template>
@@ -63,33 +67,29 @@ const getStatusColor = (status: string) => {
         <div class="flex flex-col flex-1 h-full gap-6 p-6">
             <div class="flex justify-between items-center gap-4">
                 <h1 class="text-2xl font-semibold">List Transaction</h1>
-                <div>
-                    <Link :href="route('product.create')"
-                        class="px-4 py-2 text-sm font-medium rounded-md border bg-white hover:bg-gray-100 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 transition">
-                        + Tambah Transaction
-                    </Link>
-                </div>
             </div>
 
-            <Card class="transition shadow-sm">
-                <CardHeader>
-                    <CardTitle>
-                        <div class="grid w-full max-w-full gap-6">
-                            <div v-if="props.transactions?.data?.length > 0"
-                                class="mb-4 flex items-center justify-between gap-4">
-                                <div class="relative w-64">
-                                    <Search class="absolute top-2.5 left-2 h-4 w-4 text-muted-foreground" />
-                                    <Input v-model="searchQuery" type="search" placeholder="Search..." class="pl-8" />
-                                </div>
-                            </div>
-
-                        </div>
-                    </CardTitle>
-                </CardHeader>
+            <Card class="transition shadow-lg">
                 <CardContent>
-                    <div class="overflow-x-auto rounded-md border">
-                        <Table class="w-full">
-                            <TableHeader>
+                    <div class="w-full max-w-full gap-2 mt-4">
+                        <div v-if="props.transactions?.data?.length > 0"
+                            class="mb-4 flex items-center justify-between gap-2">
+                            <div class="relative w-64">
+                                <Search class="absolute top-2.5 left-2 h-4 w-4 text-muted-foreground" />
+                                <Input v-model="searchQuery" type="search" placeholder="Search..." class="pl-8" />
+                            </div>
+                            <div>
+                                <Link :href="route('product.index')"
+                                    class="px-4 py-2 text-sm font-medium rounded-md border bg-white hover:bg-blue-100 dark:bg-blue-800 dark:text-white dark:border-blue-600 dark:hover:bg-blue-700 transition">
+                                    + Add Transaction
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-lg border border-border">
+                        <Table class="min-w-full divide-y divide-border">
+                            <TableHeader class="bg-muted/50">
                                 <TableRow>
                                     <TableHead class="w-[40px] px-2 py-3"> # </TableHead>
                                     <TableHead class="px-2 py-3">Order ID</TableHead>
@@ -102,7 +102,7 @@ const getStatusColor = (status: string) => {
                                     <TableHead class="px-2 py-3">Action</TableHead>
                                 </TableRow>
                             </TableHeader>
-                            <TableBody>
+                            <TableBody class="bg-background divide-y divide-border">
                                 <template v-if="filteredData.length > 0">
                                     <TableRow v-for="(transaction, index) in filteredData" :key="transaction.id">
                                         <TableCell class="font-medium px-2 py-2">
@@ -111,10 +111,10 @@ const getStatusColor = (status: string) => {
                                         <TableCell class="px-2 py-2">{{ transaction.order_id || "null" }}</TableCell>
                                         <TableCell class="px-2 py-2">{{
                                             transaction.product?.name || "-"
-                                            }}</TableCell>
+                                        }}</TableCell>
                                         <TableCell class="px-2 py-2">{{
                                             transaction.customer?.name || "-"
-                                            }}</TableCell>
+                                        }}</TableCell>
                                         <TableCell class="px-2 py-2">{{ transaction.quantity }}</TableCell>
                                         <TableCell class="px-2 py-2">{{ transaction.total_price }}</TableCell>
                                         <TableCell class="px-2 py-2">
@@ -126,7 +126,7 @@ const getStatusColor = (status: string) => {
                                         <TableCell class="px-2 py-2">{{ transaction.created_at }}</TableCell>
                                         <TableCell class="px-2 py-2">
                                             <Link :href="route('transaction.show', { transaction: transaction.id })"
-                                                class="px-1 py-1 text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 rounded-md transition">
+                                                class="px-2.5 py-2 text-xs font-semibold text-white bg-indigo-500 hover:bg-indigo-600 rounded-md transition">
                                                 View
                                             </Link>
                                         </TableCell>
@@ -140,6 +140,8 @@ const getStatusColor = (status: string) => {
                             </TableBody>
                         </Table>
                     </div>
+
+                    <!-- Pagination -->
                     <div class="mt-4 flex items-center justify-between" v-if="props.transactions.total > 0">
                         <p class="text-sm text-muted-foreground">
                             Page {{ props.transactions.current_page }} of
@@ -149,13 +151,14 @@ const getStatusColor = (status: string) => {
 
                         <div class="flex items-center gap-1">
                             <Link v-for="(link, i) in props.transactions.links" :key="i" :href="link.url ?? ''"
-                                preserve-state preserve-scroll v-html="link.label" class="rounded-md px-3 py-1 text-sm"
-                                :class="{
+                                preserve-state preserve-scroll class="rounded-md px-3 py-1 text-sm" :class="{
                                     'bg-primary text-primary-foreground':
                                         link.active,
                                     'pointer-events-none opacity-50': !link.url,
                                     'hover:bg-muted': link.url && !link.active,
-                                }" />
+                                }">
+                                {{ formatPaginationLabel(link.label) }}
+                            </Link>
                         </div>
                     </div>
                 </CardContent>
