@@ -27,7 +27,7 @@ Route::get('dashboard', [DahsboardController::class, 'index'])->middleware(['aut
 
 Route::middleware(['auth'])->group(function () {
     #checkout
-    Route::get('checkout/{id}', [ProductController::class, 'checkout'])->name('checkout');
+    Route::get('/checkout/{id}', [ProductController::class, 'checkout'])->name('checkout');
 
     #payment
     Route::post('/payment', [PaymentController::class, 'payment'])->name('payment');

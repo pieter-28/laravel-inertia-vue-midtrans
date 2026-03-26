@@ -4,20 +4,15 @@ namespace App\Services;
 
 use App\Models\Product;
 use App\Models\Transaction;
-use App\Repositories\TransactionRepositoryInterface;
 use Midtrans\Config;
 use Midtrans\Snap;
 use Illuminate\Support\Str;
 
 class CheckoutService
 {
-    protected $transactionRepository;
 
-    public function __construct(TransactionRepositoryInterface $transactionRepository)
+    public function __construct()
     {
-        $this->transactionRepository = $transactionRepository;
-
-        // Konfigurasi Midtrans
         Config::$serverKey = config('midtrans.server_key');
         Config::$isProduction = config('midtrans.is_production', false);
         Config::$isSanitized = true;

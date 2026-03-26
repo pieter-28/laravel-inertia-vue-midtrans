@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
-use Illuminate\Http\Request;
-use App\Services\CheckoutService;
 use App\Models\Transaction;
-use Inertia\Inertia;
+use App\Services\CheckoutService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
@@ -15,7 +13,6 @@ class PaymentController extends Controller
 
     /**
      * Summary of __construct
-     * @param CheckoutService $checkoutService
      */
     public function __construct(CheckoutService $checkoutService)
     {
@@ -25,12 +22,7 @@ class PaymentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        return Inertia::render('Payment/Index', [
-            'products' => Product::get(),
-        ]);
-    }
+    public function index() {}
 
     /**
      * Show the form for creating a new resource.
@@ -96,7 +88,7 @@ class PaymentController extends Controller
         try {
             $result = $this->checkoutService->processCheckout($validated);
 
-            if (!$result) {
+            if (! $result) {
                 return response()->json(['message' => 'Checkout gagal'], 500);
             }
 
@@ -105,7 +97,8 @@ class PaymentController extends Controller
                 'transaction' => $result['transaction'],
             ]);
         } catch (\Exception $e) {
-            Log::error('Checkout error: ' . $e->getMessage());
+            Log::error('Checkout error: '.$e->getMessage());
+
             return response()->json(
                 [
                     'message' => 'Checkout gagal',
@@ -121,7 +114,7 @@ class PaymentController extends Controller
         // Ambil raw JSON dari Midtrans
         $payload = json_decode($request->getContent(), true);
 
-        if (!$payload) {
+        if (! $payload) {
             return response()->json(['message' => 'Invalid payload'], 400);
         }
 
@@ -133,12 +126,12 @@ class PaymentController extends Controller
         $signatureKey = $payload['signature_key'] ?? null;
 
         // Validasi field wajib
-        if (!$orderId || !$statusCode || !$grossAmount || !$signatureKey) {
+        if (! $orderId || ! $statusCode || ! $grossAmount || ! $signatureKey) {
             return response()->json(['message' => 'Invalid data'], 400);
         }
 
         // Validasi signature
-        $expectedSignature = hash('sha512', $orderId . $statusCode . $grossAmount . $serverKey);
+        $expectedSignature = hash('sha512', $orderId.$statusCode.$grossAmount.$serverKey);
 
         if ($expectedSignature !== $signatureKey) {
             return response()->json(['message' => 'Invalid signature'], 403);
@@ -147,8 +140,9 @@ class PaymentController extends Controller
         // ✅ FIX: cari pakai order_id
         $transaction = Transaction::where('order_id', $orderId)->first();
 
-        if (!$transaction) {
-            \Log::warning('Transaction not found', ['order_id' => $orderId]);
+        if (! $transaction) {
+            Log::warning('Transaction not found', ['order_id' => $orderId]);
+
             return response()->json(['message' => 'Transaction not found'], 404);
         }
 
@@ -194,9 +188,9 @@ class PaymentController extends Controller
         $transaction->midtrans_response = $payload;
         $transaction->save();
 
-        \Log::info('Midtrans Webhook Success', [
+        Log::info('Midtrans Webhook Success', [
             'order_id' => $orderId,
-            'status' => $transaction->status
+            'status' => $transaction->status,
         ]);
 
         return response()->json(['message' => 'Webhook processed']);
