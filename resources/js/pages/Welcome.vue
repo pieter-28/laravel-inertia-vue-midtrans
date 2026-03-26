@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Head, Link, usePage } from '@inertiajs/vue3';
-import { Activity, ArrowRight, ChevronRight, Code2, Globe2, Layout, ShieldCheck, Sparkles, Star, Zap } from 'lucide-vue-next';
+import { Activity, ArrowRight, Check, ChevronRight, Code2, Globe2, Layout, ShieldCheck, Sparkles, Star, Zap } from 'lucide-vue-next';
 
 interface PageProps extends Record<string, unknown> {
     auth?: {
@@ -108,6 +108,34 @@ const faqs = [
         content: 'Community support is available via our Discord server. Priority email and chat support are available on our Pro tier.',
     },
 ];
+
+const pricingPlans = [
+    {
+        name: 'Starter',
+        price: '0',
+        description: 'Perfect for small side projects.',
+        features: ['Up to 3 projects', 'Basic support', 'Community access'],
+        buttonText: 'Get Started',
+        variant: 'outline' as const,
+    },
+    {
+        name: 'Pro',
+        price: '49',
+        description: 'The best for professionals and teams.',
+        features: ['Unlimited projects', 'Priority support', 'Advanced analytics', 'Custom domains'],
+        buttonText: 'Start Pro Trial',
+        variant: 'default' as const,
+        highlight: true,
+    },
+    {
+        name: 'Enterprise',
+        price: 'Custom',
+        description: 'Bespoke solutions for large organizations.',
+        features: ['Custom infrastructure', '24/7 dedicated support', 'SLA guarantees'],
+        buttonText: 'Contact Sales',
+        variant: 'outline' as const,
+    },
+];
 </script>
 
 <template>
@@ -132,8 +160,16 @@ const faqs = [
                     >
                         <Activity class="h-5 w-5" />
                     </div>
-                    <span class="text-xl font-bold tracking-tight">Acme</span>
+                    <span class="text-xl font-bold tracking-tight">Midtrans</span>
                 </div>
+
+                <nav class="hidden items-center gap-8 md:flex">
+                    <a href="#features" class="text-sm font-medium text-muted-foreground transition-all hover:text-primary">Features</a>
+                    <a href="#pricing" class="text-sm font-medium text-muted-foreground transition-all hover:text-primary">Pricing</a>
+                    <a href="#faq" class="text-sm font-medium text-muted-foreground transition-all hover:text-primary">FAQ</a>
+                    <a href="#about" class="text-sm font-medium text-muted-foreground transition-all hover:text-primary">About</a>
+                </nav>
+
                 <nav class="flex items-center gap-4">
                     <Link v-if="page.props.auth?.user" :href="route('dashboard')">
                         <Button variant="ghost" class="text-sm font-medium">Dashboard</Button>
@@ -196,7 +232,7 @@ const faqs = [
             </section>
 
             <!-- Features Section -->
-            <section class="container relative z-10 mx-auto space-y-16 px-4 py-16 sm:px-6 md:py-24 lg:px-8">
+            <section id="features" class="container relative z-10 mx-auto space-y-16 px-4 py-16 sm:px-6 md:py-24 lg:px-8 scroll-mt-20">
                 <div class="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
                     <h2 class="text-3xl font-bold leading-[1.1] sm:text-3xl md:text-5xl">Engineered for growth</h2>
                     <p class="max-w-[42rem] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
@@ -281,8 +317,54 @@ const faqs = [
                 </div>
             </section>
 
+            <!-- Pricing Section -->
+            <section id="pricing" class="container relative z-10 mx-auto px-4 py-24 sm:px-6 md:py-32 lg:px-8 scroll-mt-20">
+                <div class="mx-auto mb-16 flex max-w-[58rem] flex-col items-center space-y-4 text-center">
+                    <Badge variant="outline" class="mb-4 bg-background">Pricing</Badge>
+                    <h2 class="text-3xl font-bold leading-[1.1] sm:text-3xl md:text-5xl">Simple, transparent pricing</h2>
+                    <p class="max-w-[42rem] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
+                        Choose the plan that's right for you and start building your next project today.
+                    </p>
+                </div>
+
+                <div class="mx-auto grid max-w-5xl gap-8 md:grid-cols-3">
+                    <Card
+                        v-for="(plan, index) in pricingPlans"
+                        :key="index"
+                        :class="[
+                            'relative flex flex-col border-border/50 bg-background/50 backdrop-blur-sm transition-all duration-300 hover:border-primary/50',
+                            plan.highlight ? 'scale-105 border-primary shadow-xl ring-1 ring-primary/20' : '',
+                        ]"
+                    >
+                        <CardHeader>
+                            <CardTitle class="text-2xl font-bold">{{ plan.name }}</CardTitle>
+                            <CardDescription>{{ plan.description }}</CardDescription>
+                        </CardHeader>
+                        <CardContent class="flex-1 space-y-6">
+                            <div class="flex items-baseline gap-1">
+                                <span class="text-4xl font-bold tracking-tight">
+                                    {{ plan.price === 'Custom' ? plan.price : '$' + plan.price }}
+                                </span>
+                                <span v-if="plan.price !== 'Custom'" class="text-sm font-medium text-muted-foreground">/month</span>
+                            </div>
+                            <ul class="space-y-3 text-sm">
+                                <li v-for="feature in plan.features" :key="feature" class="flex items-center gap-2">
+                                    <Check class="h-4 w-4 text-primary" />
+                                    <span>{{ feature }}</span>
+                                </li>
+                            </ul>
+                        </CardContent>
+                        <div class="p-6 pt-0">
+                            <Button :variant="plan.variant" class="w-full" :class="{ 'shadow-lg shadow-primary/20': plan.highlight }">
+                                {{ plan.buttonText }}
+                            </Button>
+                        </div>
+                    </Card>
+                </div>
+            </section>
+
             <!-- FAQ Section -->
-            <section class="container mx-auto px-4 py-16 sm:px-6 md:py-32 lg:px-8">
+            <section id="faq" class="container mx-auto px-4 py-16 sm:px-6 md:py-32 lg:px-8 scroll-mt-20">
                 <div class="mx-auto mb-12 flex max-w-[58rem] flex-col items-center space-y-4 text-center">
                     <h2 class="text-3xl font-bold leading-[1.1] sm:text-3xl md:text-5xl">Frequently Asked Questions</h2>
                     <p class="max-w-[42rem] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
@@ -335,7 +417,7 @@ const faqs = [
         </main>
 
         <!-- Footer -->
-        <footer class="border-t border-border/40 bg-background pb-8 pt-16">
+        <footer id="about" class="border-t border-border/40 bg-background pb-8 pt-16 scroll-mt-20">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="mb-12 grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-5">
                     <div class="col-span-2 space-y-4 lg:col-span-2">
@@ -376,7 +458,7 @@ const faqs = [
                 <div
                     class="mt-8 flex flex-col items-center justify-between gap-4 border-t border-border/40 pt-8 text-sm text-muted-foreground md:flex-row"
                 >
-                    <p>© {{ new Date().getFullYear() }} Acme Inc. All rights reserved.</p>
+                    <p>© {{ new Date().getFullYear() }} 😍Peter28. All rights reserved.</p>
                     <div class="flex items-center gap-4">
                         <span class="cursor-pointer transition-colors hover:text-foreground">Twitter</span>
                         <span class="cursor-pointer transition-colors hover:text-foreground">GitHub</span>
