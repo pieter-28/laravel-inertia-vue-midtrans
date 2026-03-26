@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ThemeSwitcher from '@/components/ThemeSwitcher.vue';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -171,6 +172,7 @@ const pricingPlans = [
                 </nav>
 
                 <nav class="flex items-center gap-4">
+                    <ThemeSwitcher />
                     <Link v-if="page.props.auth?.user" :href="route('dashboard')">
                         <Button variant="ghost" class="text-sm font-medium">Dashboard</Button>
                     </Link>
@@ -232,7 +234,7 @@ const pricingPlans = [
             </section>
 
             <!-- Features Section -->
-            <section id="features" class="container relative z-10 mx-auto space-y-16 px-4 py-16 sm:px-6 md:py-24 lg:px-8 scroll-mt-20">
+            <section id="features" class="container relative z-10 mx-auto scroll-mt-20 space-y-16 px-4 py-16 sm:px-6 md:py-24 lg:px-8">
                 <div class="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
                     <h2 class="text-3xl font-bold leading-[1.1] sm:text-3xl md:text-5xl">Engineered for growth</h2>
                     <p class="max-w-[42rem] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
@@ -318,7 +320,7 @@ const pricingPlans = [
             </section>
 
             <!-- Pricing Section -->
-            <section id="pricing" class="container relative z-10 mx-auto px-4 py-24 sm:px-6 md:py-32 lg:px-8 scroll-mt-20">
+            <section id="pricing" class="container relative z-10 mx-auto scroll-mt-20 px-4 py-24 sm:px-6 md:py-32 lg:px-8">
                 <div class="mx-auto mb-16 flex max-w-[58rem] flex-col items-center space-y-4 text-center">
                     <Badge variant="outline" class="mb-4 bg-background">Pricing</Badge>
                     <h2 class="text-3xl font-bold leading-[1.1] sm:text-3xl md:text-5xl">Simple, transparent pricing</h2>
@@ -364,7 +366,7 @@ const pricingPlans = [
             </section>
 
             <!-- FAQ Section -->
-            <section id="faq" class="container mx-auto px-4 py-16 sm:px-6 md:py-32 lg:px-8 scroll-mt-20">
+            <section id="faq" class="container mx-auto scroll-mt-20 px-4 py-16 sm:px-6 md:py-32 lg:px-8">
                 <div class="mx-auto mb-12 flex max-w-[58rem] flex-col items-center space-y-4 text-center">
                     <h2 class="text-3xl font-bold leading-[1.1] sm:text-3xl md:text-5xl">Frequently Asked Questions</h2>
                     <p class="max-w-[42rem] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
@@ -417,7 +419,7 @@ const pricingPlans = [
         </main>
 
         <!-- Footer -->
-        <footer id="about" class="border-t border-border/40 bg-background pb-8 pt-16 scroll-mt-20">
+        <footer id="about" class="scroll-mt-20 border-t border-border/40 bg-background pb-8 pt-16">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="mb-12 grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-5">
                     <div class="col-span-2 space-y-4 lg:col-span-2">
