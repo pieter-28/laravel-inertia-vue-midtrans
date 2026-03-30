@@ -1,12 +1,20 @@
 <script setup lang="ts">
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { usePaginatedFilter } from '@/composables/usePaginatedFilter';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem, type Paginated, type Transaction } from '@/types';
 import { Head, Link } from '@inertiajs/vue3';
-import { Box, Search } from 'lucide-vue-next';
+import { Box, EllipsisVertical, Search } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -114,12 +122,18 @@ const formatPaginationLabel = (label: string) =>
                                         </TableCell>
                                         <TableCell class="px-2 py-2">{{ transaction.created_at }}</TableCell>
                                         <TableCell class="px-2 py-2">
-                                            <Link
-                                                :href="route('transaction.show', { transaction: transaction.id })"
-                                                class="rounded-md bg-indigo-500 px-2.5 py-2 text-xs font-semibold text-white transition hover:bg-indigo-600"
-                                            >
-                                                View
-                                            </Link>
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger>
+                                                    <EllipsisVertical />
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent>
+                                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                                    <DropdownMenuSeparator />
+                                                    <DropdownMenuItem class="cursor-pointer">
+                                                        <Link :href="route('transaction.show', { transaction: transaction.id })"> View Details </Link>
+                                                    </DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
                                         </TableCell>
                                     </TableRow>
                                 </template>
